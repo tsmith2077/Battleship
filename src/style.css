@@ -1,0 +1,111 @@
+@font-face {
+    font-family: 'MyFont';
+    src: url('./Kanit-Bold.ttf') format('truetype'),
+      url('./Kanit-Regular.ttf') format('truetype');
+    /* font-weight: 600;
+    font-style: normal; */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #708090;
+}
+
+#hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 23vh;
+  padding-bottom: 1rem;
+  background-image: url(./logo.jpeg);
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-color: black;
+}
+
+#gameContainer {
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#gameBoardCont {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
+
+#gameBoardMain,
+#gameBoardEnemy {
+  display: grid;
+  grid-template-columns: repeat(10, 40px);
+  grid-template-rows: repeat(10, 40px);
+  width: 400px;
+  height: 400px;
+}
+
+#gameBoardEnemy {
+  display: none;
+}
+
+.gameBoardSquare:hover {
+  background-color: grey;
+}
+
+.gameBoardSquare {
+  border: solid black;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+}
+
+#newGameHeader {
+  margin-top: 5vh;
+  margin-bottom: 4rem;
+  font-size: 2rem;
+  text-decoration: underline;
+}
+
+#newGameCont {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 4rem;
+}
+
+#newGameBtn {
+  height: 4rem;
+  width: 13rem;
+  border-radius: 28px;
+}
+
+#axisBtn{
+  height: 2rem;
+  width: 6rem;
+  border-radius: 28px;
+  display: none;
+  margin-bottom: 1rem;
+}
+
+#playerTurnHeading {
+  display: none;
+  margin-bottom: 1rem;
+}
+
+.ship {
+  background-color: black;
+}
