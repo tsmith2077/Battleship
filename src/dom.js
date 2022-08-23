@@ -1,14 +1,12 @@
-// Game boards and container
-const gameBoardCont = document.querySelector('#gameBoardCont');
+import { checkForHit } from "./gameplayLoop";
+
+// Game boards
 const gameBoardMain = document.querySelector('#gameBoardMain');
 const gameBoardEnemy = document.querySelector('#gameBoardEnemy');
 // Starting Screen
 const startingScreen = document.querySelector('#startingScreen');
 const startGame = document.querySelector('#newGameBtn');
 const axisBtn = document.querySelector('#axisBtn');
-
-let player1Shots = [];
-let player2Shots = [];
 
 // EVENT LISTENERS
 startGame.addEventListener('click', function (event) {
@@ -34,7 +32,7 @@ const displayGameBoard = ((gameBoardDiv, boardClass) => {
         if (boardClass == 'mainSquare') {
             gameBoardSquare.setAttribute('data', i);
         } else if (boardClass == 'enemySquare') {
-            // gameBoardSquare.addEventListener('click', function () {checkForHit(event.currentTarget)});
+            gameBoardSquare.addEventListener('click', function () {checkForHit(event)});
             gameBoardSquare.setAttribute('data2', i);
         }
         gameBoardDiv.appendChild(gameBoardSquare);

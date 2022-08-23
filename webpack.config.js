@@ -6,6 +6,7 @@ module.exports = {
     index: './src/index.js',
     dom: './src/dom.js',
     ship: './src/ship.js',
+    gamePlayLoop: './src/gameplayLoop.js',
   },
   devServer: {
     static: './dist',

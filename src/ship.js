@@ -1,16 +1,16 @@
-// Player 1 Placing ships works, need to get cpu working
 import { gameBoardEnemy, displayGameBoard } from "./dom";
 const axisBtn = document.querySelector('#axisBtn');
-
+let playerTurn = 'player1';
+let player1Ships = "";
+let player2Ships = "";
+let finishedPlacingShips = false;
 
 const createAndPlaceShips = () => {
 
 
-let player1Ships = ship();
-let player2Ships = ship();
+player1Ships = ship();
+player2Ships = ship();
 let axis = 'row';
-
-let playerTurn = 'player1';
 
 // export default 
 function ship () {
@@ -54,10 +54,27 @@ function ship () {
     let shipLength = playerShips[currentShipIndex].shipSize;
     let squareHover = findSquareHover(event, playerShips);
     if (!checkRoomForShip(shipLength, squareHover, playerShips) && playerTurn == 'player1') {
-        alert('Not enough room for the ship.');
+      let playerTurnHeading = document.querySelector('#playerTurnHeading');
+      playerTurnHeading.textContent = 'Not enough room for ship. Please try again.'
     } else if ((checkRoomForShip(shipLength, squareHover, playerShips) && shipLength > 1)) {
-        placeCurrentShip(playerShips, shipLength, squareHover, currentShipIndex);
+      changePlayerTurnHeading();
+      placeCurrentShip(playerShips, shipLength, squareHover, currentShipIndex);
     }
+  };
+
+  const changePlayerTurnHeading = (switchPlayerTurn=false) => {
+    let playerTurnHeading = document.querySelector('#playerTurnHeading');
+    if (playerTurn === 'player1' && switchPlayerTurn === true) {
+      playerTurn = 'player2';
+      return playerTurnHeading.textContent = 'Player 2 Turn';
+    } else if (playerTurn === 'player1' && switchPlayerTurn === false) {
+      return playerTurnHeading.textContent = 'Player 1 Turn';
+    } else if (playerTurn === 'player2' && switchPlayerTurn === true) {
+      playerTurn = 'player1';
+      return playerTurnHeading.textContent = 'Player 1 Turn';
+    } else if (playerTurn === 'player2' && switchPlayerTurn === false) {
+      return playerTurnHeading.textContent = 'Player 2 Turn';
+    } 
   };
 
   function placeCurrentShip (playerShips, shipLength, squareHover, currentShipIndex) {
@@ -67,10 +84,10 @@ function ship () {
     }
     // Check if player has placed all ships
     if (checkShipsPlaced(playerShips) === 5 && playerTurn === 'player1') {
-      playerTurn = 'player2';
+      changePlayerTurnHeading(true);
       placeComputerShips();
     } else if (checkShipsPlaced(player2Ships) === 5 && playerTurn === 'player2') {
-      playerTurn = 'player1';
+      changePlayerTurnHeading(true);
     }
 };
 
@@ -87,6 +104,7 @@ function placeComputerShips () {
     placeAllShips(shipPlacement, player2Ships);
   }
   displayGameBoard(gameBoardEnemy, 'enemySquare');
+  finishedPlacingShips = true;
 };
 
 function randomIntFromInterval(min, max) { // min and max included 
@@ -131,15 +149,6 @@ function checkRoomForShip (shipLength, squareHover, playerShips) {
   }
 }
 
-function findSelectedSquare (i) {
-    let stringCounter = "'" + i.toString() + "'";
-    if (playerTurn == 'player1') {
-        return document.querySelector(`[data=${stringCounter}]`);
-    } else if (playerTurn == 'player2') {
-        return document.querySelector(`[data2=${stringCounter}]`);
-    }
-};
-
 function checkForMatchInArr (playerShips, positionArr) {
   if (playerShips[0].position === null) {
     return false;
@@ -165,122 +174,125 @@ axisBtn.addEventListener('click', function () {
 // Event Listener for placing ships
 gameBoardMain.addEventListener('click', function (event) {
   if (player1Ships[4].position === null) {
-    let playerShips = findPlayerShips();
-    placeAllShips(event, playerShips)
+    placeAllShips(event, findPlayerShips())
   }
 });
 
 // Remove adjusted color for mouse hover on placing ships when mouseout
-gameBoardMain.addEventListener('mouseout', function (event) {
-  removeHoverPlaceShip(event);
-});
+  gameBoardMain.addEventListener('mouseout', function (event) {
+    removeHoverPlaceShip(event);
+  });
 
 
-// Change the color of gameboard squares while placing ships
-gameBoardMain.addEventListener('mouseover', function (event) {
-  hoverPlaceShip(event);
-});
+  // Change the color of gameboard squares while placing ships
+  gameBoardMain.addEventListener('mouseover', function (event) {
+    hoverPlaceShip(event);
+  });
 
 
-// EVENT LISTENER FUNCTIONS
-const findPlayerShips = () => {
-  if (playerTurn == 'player1') {
-    return player1Ships;
+  // EVENT LISTENER FUNCTIONS
+  const findPlayerShips = () => {
+    if (playerTurn == 'player1') {
+      return player1Ships;
+    }
+    else if (playerTurn == 'player2') {
+      return player2Ships;
+    }
   }
-  else if (playerTurn == 'player2') {
-    return player2Ships;
-  }
-}
 
-const hoverPlaceShip = (event) => {
-  let playerShips = findPlayerShips();
-  let squareHover = parseInt(event.target.getAttribute('data'));
-  let currentShipIndex = checkShipsPlaced(playerShips);
-  let shipLength = findSquareHoverLength(playerShips, currentShipIndex);
-  if (axis == 'row') {
-      for (let i = squareHover; i < (squareHover + shipLength); i++) {
-          if (i % 10 == 1 && squareHover % 10 != 1) {
-              break;
-          };
-          changeSquareColor(i, 'grey');
-      }
-  } else if (axis == 'column') {
-      for (let i = squareHover; i < (squareHover + (shipLength*10)); i+=10) {
-          if (i > 100) {
-              break;
-          };
-          changeSquareColor(i, 'grey');
-      };
+  const hoverPlaceShip = (event) => {
+    let playerShips = findPlayerShips();
+    let squareHover = parseInt(event.target.getAttribute('data'));
+    let currentShipIndex = checkShipsPlaced(playerShips);
+    let shipLength = findSquareHoverLength(playerShips, currentShipIndex);
+    if (axis == 'row') {
+        for (let i = squareHover; i < (squareHover + shipLength); i++) {
+            if (i % 10 == 1 && squareHover % 10 != 1) {
+                break;
+            };
+            changeSquareColor(i, 'grey');
+        }
+    } else if (axis == 'column') {
+        for (let i = squareHover; i < (squareHover + (shipLength*10)); i+=10) {
+            if (i > 100) {
+                break;
+            };
+            changeSquareColor(i, 'grey');
+        };
+    }
+  };
+
+  const removeHoverPlaceShip = (event) => {
+    let playerShips = findPlayerShips();
+    let currentShipIndex = checkShipsPlaced(playerShips);
+    let shipLength = findSquareHoverLength(playerShips, currentShipIndex);
+    let squareHover = parseInt(event.target.getAttribute('data'));
+    if (axis == 'row') {
+        let lastDigit = findLastDigit(squareHover);
+        let adjustedShipLength = shipLength;
+        if ((lastDigit + shipLength) > 11) {
+            adjustedShipLength = shipLength - (lastDigit + shipLength - 11);
+        }
+        for (let i = squareHover; i < (squareHover + adjustedShipLength); i++) {
+            changeSquareColor(i, "#708090")
+        }
+    } else if (axis == 'column') {
+        for (let i = squareHover; i < (squareHover + (shipLength*10)); i+=10) {
+            if (i < 101) {
+                changeSquareColor(i, "#708090")
+            }
+        }
+    }
+  };
+
+
+  // Adjust hover length to 1 after all ships have been placed
+  const findSquareHoverLength = (playerShips, currentShipIndex) => {
+    if (currentShipIndex != 5) {
+      return playerShips[currentShipIndex].shipSize;
+    } else {
+      return 1;
+    }
   }
+
+  function changeAxis () {
+    if (axis == 'row') {
+        return axis = 'column';
+    } else if (axis == 'column') {
+        return axis = 'row';
+    }
+  }
+
+  const changeSquareColor = (i, color) => {
+    if (playerTurn == 'player1') { 
+        let stringCounter = "'" + i.toString() + "'";
+        let selectedSquare = document.querySelector(`[data=${stringCounter}]`);
+        if (!selectedSquare.classList.contains('ship')) {
+          selectedSquare.style.backgroundColor = color;
+        }
+        if (color == 'black') {
+            selectedSquare.classList.add('ship');
+        }
+    }
+  };
+
+
+
+  function findLastDigit (squareHover) {
+    let lastDigit = String(squareHover).slice(-1);
+    return lastDigit = parseInt(lastDigit);
+  };
 };
 
-const removeHoverPlaceShip = (event) => {
-  let playerShips = findPlayerShips();
-  let currentShipIndex = checkShipsPlaced(playerShips);
-  let shipLength = findSquareHoverLength(playerShips, currentShipIndex);
-  let squareHover = parseInt(event.target.getAttribute('data'));
-  if (axis == 'row') {
-      let lastDigit = findLastDigit(squareHover);
-      let adjustedShipLength = shipLength;
-      if ((lastDigit + shipLength) > 11) {
-          adjustedShipLength = shipLength - (lastDigit + shipLength - 11);
-      }
-      for (let i = squareHover; i < (squareHover + adjustedShipLength); i++) {
-          changeSquareColor(i, "#708090")
-      }
-  } else if (axis == 'column') {
-      for (let i = squareHover; i < (squareHover + (shipLength*10)); i+=10) {
-          if (i < 101) {
-              changeSquareColor(i, "#708090")
-          }
-      }
-  }
-};
-
-
-// Adjust hover length to 1 after all ships have been placed
-const findSquareHoverLength = (playerShips, currentShipIndex) => {
-  if (currentShipIndex != 5) {
-    return playerShips[currentShipIndex].shipSize;
+function findSquareHover (event) {
+  if (playerTurn === 'player1' && event.target.hasAttribute('data')) {
+    return parseInt(event.target.getAttribute('data'));
+  } else if (playerTurn === 'player1' && event.target.hasAttribute('data2')) {
+    return parseInt(event.target.getAttribute('data2'));
   } else {
-    return 1;
-  }
-}
-
-function changeAxis () {
-  if (axis == 'row') {
-      return axis = 'column';
-  } else if (axis == 'column') {
-      return axis = 'row';
-  }
-}
-
-const changeSquareColor = (i, color) => {
-  if (playerTurn == 'player1') { 
-      let stringCounter = "'" + i.toString() + "'";
-      let selectedSquare = document.querySelector(`[data=${stringCounter}]`);
-      if (!selectedSquare.classList.contains('ship')) {
-        selectedSquare.style.backgroundColor = color;
-      }
-      if (color == 'black') {
-          selectedSquare.classList.add('ship');
-      }
+    return event;
   }
 };
 
-function findSquareHover (event, playerShips) {
-  if (playerShips == player1Ships) {
-      return parseInt(event.target.getAttribute('data'));
-  } else {
-      return event;
-  }
-};
-
-function findLastDigit (squareHover) {
-  let lastDigit = String(squareHover).slice(-1);
-  return lastDigit = parseInt(lastDigit);
-};
-
-}
-
-export { createAndPlaceShips }
+export { createAndPlaceShips, playerTurn, player1Ships,
+   player2Ships, finishedPlacingShips, findSquareHover }
