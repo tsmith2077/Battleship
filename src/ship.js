@@ -62,21 +62,6 @@ function ship () {
     }
   };
 
-  const changePlayerTurnHeading = (switchPlayerTurn=false) => {
-    let playerTurnHeading = document.querySelector('#playerTurnHeading');
-    if (playerTurn === 'player1' && switchPlayerTurn === true) {
-      playerTurn = 'player2';
-      return playerTurnHeading.textContent = 'Player 2 Turn';
-    } else if (playerTurn === 'player1' && switchPlayerTurn === false) {
-      return playerTurnHeading.textContent = 'Player 1 Turn';
-    } else if (playerTurn === 'player2' && switchPlayerTurn === true) {
-      playerTurn = 'player1';
-      return playerTurnHeading.textContent = 'Player 1 Turn';
-    } else if (playerTurn === 'player2' && switchPlayerTurn === false) {
-      return playerTurnHeading.textContent = 'Player 2 Turn';
-    } 
-  };
-
   function placeCurrentShip (playerShips, shipLength, squareHover, currentShipIndex) {
     playerShips[currentShipIndex].position = createArrForPosition(shipLength, squareHover);
     for (let i=0; i<(playerShips[currentShipIndex].position.length); i++) {
@@ -105,10 +90,6 @@ function placeComputerShips () {
   }
   displayGameBoard(gameBoardEnemy, 'enemySquare');
   finishedPlacingShips = true;
-};
-
-function randomIntFromInterval(min, max) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
 };
 
 function createArrForPosition (shipLength, squareHover) {
@@ -284,6 +265,21 @@ gameBoardMain.addEventListener('click', function (event) {
   };
 };
 
+const changePlayerTurnHeading = (switchPlayerTurn=false) => {
+  let playerTurnHeading = document.querySelector('#playerTurnHeading');
+  if (playerTurn === 'player1' && switchPlayerTurn === true) {
+    playerTurn = 'player2';
+    return playerTurnHeading.textContent = 'Player 2 Turn';
+  } else if (playerTurn === 'player1' && switchPlayerTurn === false) {
+    return playerTurnHeading.textContent = 'Player 1 Turn';
+  } else if (playerTurn === 'player2' && switchPlayerTurn === true) {
+    playerTurn = 'player1';
+    return playerTurnHeading.textContent = 'Player 1 Turn';
+  } else if (playerTurn === 'player2' && switchPlayerTurn === false) {
+    return playerTurnHeading.textContent = 'Player 2 Turn';
+  } 
+};
+
 function findSquareHover (event) {
   if (playerTurn === 'player1' && event.target.hasAttribute('data')) {
     return parseInt(event.target.getAttribute('data'));
@@ -294,5 +290,9 @@ function findSquareHover (event) {
   }
 };
 
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+};
+
 export { createAndPlaceShips, playerTurn, player1Ships,
-   player2Ships, finishedPlacingShips, findSquareHover }
+   player2Ships, finishedPlacingShips, findSquareHover, changePlayerTurnHeading, randomIntFromInterval }

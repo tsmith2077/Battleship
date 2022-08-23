@@ -1,8 +1,7 @@
-// Mark hits on board should work. Haven't tested with cpu attacking yet.
-// Get computer to attack
+// Computer can attack, make it smarter
 
 import { player1Ships, player2Ships, finishedPlacingShips, 
-    playerTurn, findSquareHover, changePlayerTurnHeading } from "./ship"
+    playerTurn, findSquareHover, changePlayerTurnHeading, randomIntFromInterval } from "./ship"
 
 let player1Shots = [];
 let player2Shots = [];
@@ -26,7 +25,12 @@ const gameplayLoop = async () => {
 
 // Helper Functions
 const checkForHit = (event) => {
-    let shotPosition = findSquareHover(event);
+    let shotPosition;
+    if (playerTurn === 'player1') {
+        shotPosition = findSquareHover(event);
+    } else if (playerTurn === 'player2') {
+        shotPosition = event;
+    }
     let playerShots = whoShotYa(); 
     let enemyShips = findEnemyShips();
     if (!playerShots.includes(shotPosition))  {
@@ -41,23 +45,47 @@ const checkForHit = (event) => {
         }
     }
     markHitOnBoard(shotPosition, enemyShips, event);
+    if (playerTurn === 'player1') {
+        setTimeout(() => {
+            changePlayerTurnHeading(true);
+            cpuShot();
+        }, 1000);
+    }
+    console.log(playerTurn)
 };
 
+
+// Computer Attack
+
+// Make cpu shoot, then make it smarter
+const cpuShot = () => {
+    let selectedSqaure = randomIntFromInterval(1, 100);
+    checkForHit(selectedSqaure);
+    changePlayerTurnHeading(true);
+}
+
+const convertNumberToDomSquare = (number) => {
+    let stringCounter = "'" + number.toString() + "'";
+    return document.querySelector(`[data=${stringCounter}]`);
+}
+
+
+
 const markHitOnBoard = (shotPosition, enemyShips, event) => {
-    let selectedSqaure;
+    let selectedSquare;
     if (playerTurn === 'player1') {
-        selectedSqaure = event.target;
+        selectedSquare = event.target;
     } else {
-        selectedSqaure = event;
+        selectedSquare = convertNumberToDomSquare(event);
     }
-    console.log(selectedSqaure)
+    console.log(selectedSquare)
     for (let i=0; i < enemyShips.length; i++) {
         if (enemyShips[i].position.includes(shotPosition)) {
-            selectedSqaure.textContent = 'X';
-            return selectedSqaure.style.color = '#8b0000';
+            selectedSquare.textContent = 'X';
+            return selectedSquare.style.color = '#8b0000';
         }
     }
-    return selectedSqaure.textContent = 'O';
+    return selectedSquare.textContent = 'O';
 };
 
 let allShipsSunk = (enemyShips) =>{ 
