@@ -256,13 +256,11 @@ gameBoardMain.addEventListener('click', function (event) {
         }
     }
   };
+};
 
-
-
-  function findLastDigit (squareHover) {
-    let lastDigit = String(squareHover).slice(-1);
-    return lastDigit = parseInt(lastDigit);
-  };
+function findLastDigit (squareHover) {
+  let lastDigit = String(squareHover).slice(-1);
+  return lastDigit = parseInt(lastDigit);
 };
 
 const changePlayerTurnHeading = (switchPlayerTurn=false) => {
@@ -295,4 +293,5 @@ function randomIntFromInterval(min, max) { // min and max included
 };
 
 export { createAndPlaceShips, playerTurn, player1Ships,
-   player2Ships, finishedPlacingShips, findSquareHover, changePlayerTurnHeading, randomIntFromInterval }
+   player2Ships, finishedPlacingShips, findSquareHover, changePlayerTurnHeading, 
+   randomIntFromInterval, findLastDigit }
