@@ -37,7 +37,8 @@ const checkForHit = (event) => {
         addPlayerShotToArr(shotPosition);
         for (let i=0; i < enemyShips.length; i++) {
             if (enemyShips[i].position.includes(shotPosition)) {
-                if (isShipSunk(playerShots, enemyShips[i].position) && enemyShips[i].sunk === false) {
+                enemyShips[i].hit.push(shotPosition);
+                if (isShipSunk(enemyShips[i].hit, enemyShips[i].position) && enemyShips[i].sunk === false) {
                     enemyShips[i].sunk = true;
                     allShipsSunk(findEnemyShips());
                 }
@@ -51,7 +52,6 @@ const checkForHit = (event) => {
             cpuShot();
         }, 1000);
     }
-    console.log(playerTurn)
 };
 
 
@@ -78,7 +78,6 @@ const markHitOnBoard = (shotPosition, enemyShips, event) => {
     } else {
         selectedSquare = convertNumberToDomSquare(event);
     }
-    console.log(selectedSquare)
     for (let i=0; i < enemyShips.length; i++) {
         if (enemyShips[i].position.includes(shotPosition)) {
             selectedSquare.textContent = 'X';
