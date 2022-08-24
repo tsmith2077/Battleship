@@ -48,14 +48,14 @@ const checkForHit = (event) => {
                 }
             }
         }
-    }
-    markHitOnBoard(shotPosition, enemyShips, event);
-    if (!allShipsSunk(enemyShips)) {   
-        changePlayerTurnHeading(true);
-        if (playerTurn === 'player2') {
-            setTimeout(() => {
-                cpuShot();
-            }, 1000);
+        markHitOnBoard(shotPosition, enemyShips, event);
+        if (!allShipsSunk(enemyShips)) {   
+            changePlayerTurnHeading(true);
+            if (playerTurn === 'player2') {
+                setTimeout(() => {
+                    cpuShot();
+                }, 1000);
+            }
         }
     }
 };
