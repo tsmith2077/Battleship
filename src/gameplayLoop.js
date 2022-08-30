@@ -1,4 +1,3 @@
-// TODO make it so CPU doesn't pick a spot that doesn't make sense with the ships left ex pick a spot in the corner with no open spots around it
 // TODO make play again btn
 
 import { player1Ships, player2Ships, finishedPlacingShips, 
@@ -60,237 +59,6 @@ const checkForHit = (event) => {
     }
 };
 
-
-// Computer
-// CPU randomly picks spots until it finds a ship
-// CPU will only pick spots where there is room for player1's smallest afloat ship
-// Randomly picks spots around the ship until it finds another
-// Then it chooses one of the two spots in line with the two hits
-const cpuShot = (shotPosition=false) => {
-    let selectedSquare = randomIntFromInterval(1, 100);
-    console.log(selectedSquare + ' yoo')
-    if (checkForHitShips(player1Ships) === false) {
-        while(player2Shots.includes(selectedSquare) || typeof(selectedSquare) !== 'number' || 
-        !(roomForVertShipCPU(shotPosition) || roomForHorzShipCPU(shotPosition)) ) {
-            selectedSquare = randomIntFromInterval(1, 100);
-            console.log(selectedSquare)
-        }
-    } else {
-        let enemyShipIndex = checkForHitShips(player1Ships);
-        if (player1Ships[enemyShipIndex].hit.length === 1) {
-            // If ship has only been hit once, randomly pick a square next to it
-            selectedSquare = shootShipHitOnce(enemyShipIndex);
-        } else {
-            // If ship has been hit multiple times, pick a square in line with the other hits
-            selectedSquare = shootShipHitMultipleTimes(enemyShipIndex);
-        }
-    }
-    checkForHit(selectedSquare);
-}
-
-// FOOBAR need to change the player1 to player2 when done testing
-// Check to see if there's room for player1's smallest afloat ship on horz axis
-const roomForHorzShipCPU = (shotPosition) => {
-    let minShipSize = findSmallestShipSize(player1Ships);
-    let index = 0; 
-    for (let i=1; i<minShipSize; i++) {    //Check to the right of the shotPosition
-        // If not enough room right, check where it stops
-        if (player2Shots.includes(shotPosition + i) || findLastDigit(shotPosition + i) === 1) {
-            index = minShipSize - i;
-        }
-    }
-    if (index === 0) {
-        return true;
-    } else {   
-        for (let i=(index); i>0; i--) {   // Check to the left of the shotPosition
-            if (player2Shots.includes(shotPosition - i) || (findLastDigit(shotPosition - i) === 0)) {
-                return false
-            }
-        }
-    }
-    return true;
-}
-
-// Check to see if there's room for player1's smallest afloat ship on vert axis
-const roomForVertShipCPU = (shotPosition) => {
-    let minShipSize = findSmallestShipSize(player1Ships);
-    let index = 0; 
-    for (let i=10; i<(minShipSize*10); i+=10) {    //Check below the shotPosition
-        // If not enough room below, check where it stops
-        if (player2Shots.includes(shotPosition + i) || (shotPosition + i) > 100) {
-            index = (minShipSize * 10) - i;
-        }
-    }
-    if (index === 0) {
-        return true;
-    } else {   
-        for (let i=(index); i>0; i-=10) {   // Check above the shotPosition
-            if (player2Shots.includes(shotPosition - i) || (shotPosition + i) > 0) {
-                return false
-            }
-        }
-    }
-    return true;
-}
-
-const northAndSouthSpotsFree = (firstSpotHit, lastSpotHit) => {
-    if ((firstSpotHit - 10) > 0 && (lastSpotHit + 10) <= 100  && !player2Shots.includes(firstSpotHit - 10)
-    && !player2Shots.includes(lastSpotHit + 10)) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-// // Check to make sure there's room for the smallest non-sunk ship at the spotPosition
-// const roomForShipAtShotPos = (shotPosition=null) => {
-//     minShipSize = findSmallestShipSize();
-//     if (shotPosition === null) {
-//         return false
-//     } else {
-//         let availableDirectionArr = [];
-//         // // Index Legend: 0: North, 1: South, 2: East, 3: West
-//         // let testAvailableDirArr = [[], [], [], []];
-//         let north = [];
-//         let south = [];
-//         let east = [];
-//         let west = [];
-
-//         // Push the guesstimate of where the ship would be in that direction
-//         // Add it to it's respective array
-//         for (let j=1; j<=minShipSize; j++) { 
-//             north.push(shotPosition - (10 * j));
-//             south.push(shotPosition + (10 * j));
-//             east.push(shotPosition + j);
-//             west.push(shotPosition - j);
-//         }
-
-//         for (let i=0; i<minShipSize; i++) {
-//             for (let k=0; i<player2Shots.length; i++) {
-//                 if (north[i].includes(player2Shots)) {
-//                     north = false;
-//                 } else if (south[i].includes(player2Shots)) {
-//                     south = false;
-//                 } else if (east[i].includes(player2Shots)) {
-//                     east = false;
-//                 } else if (west[i].includes(player2Shots)) {
-//                     west = false
-//                 }
-//                 // if (testAvailableDirArr[i] === player2Shots[k]) {
-//                 //     return false;
-//                 // } else if (north) {
-//                 //     availableDirectionArr.push[i];
-//                 // }
-//             }
-//         }
-//         if (north !== false) {
-//             availableDirectionArr.push[1];
-//         } else if (south !== fasle) {
-//             availableDirectionArr.push[1];
-//         } else if (east !== fasle) {
-//             availableDirectionArr.push[1];
-//         } else if (west !== fasle) {
-//             availableDirectionArr.push[1];
-//         }
-
-//         return availableDirectionArr;
-//     }
-// }
-
-
-const shootShipHitMultipleTimes = (enemyShipIndex) => {
-    let firstSpotHit = player1Ships[enemyShipIndex].hit[0];
-    let lastSpotHit = player1Ships[enemyShipIndex].hit[player1Ships[enemyShipIndex].hit.length - 1];
-    if ( (lastSpotHit - firstSpotHit) > 9 ) {        // Check if ship is vertical
-        // If both North and South squares are free, randomly pick one
-        if (northAndSouthSpotsFree(firstSpotHit, lastSpotHit)) {
-            if (randomIntFromInterval(1, 2) === 1)  {
-                return firstSpotHit - 10;
-            } else if (!player2Shots.includes(lastSpotHit + 10)) {
-                return lastSpotHit + 10;
-            }
-        } else if ((firstSpotHit - 10) > 0 && !player2Shots.includes(firstSpotHit - 10)) {
-            // Only the North square is free
-            return firstSpotHit - 10;
-        } else if ((lastSpotHit + 10) <= 100  && !player2Shots.includes(lastSpotHit + 10)) {
-            // Only the South square is free
-            return lastSpotHit + 10;
-        }
-    } else if ( (lastSpotHit - firstSpotHit) < 9 ) {    // Check if ship is horizontal
-        // If both East and West squares are free, randomly pick one
-        if (checkEastAndWestSpotsFree(firstSpotHit, lastSpotHit)) {
-            if (randomIntFromInterval(1, 2) === 1 && !player2Shots.includes(firstSpotHit - 1)) {
-                return firstSpotHit - 1;
-            } else if (!player2Shots.includes(lastSpotHit + 1)) {
-                return lastSpotHit + 1;
-            }
-        } else if (findLastDigit(firstSpotHit) !== 1 && !player2Shots.includes(firstSpotHit - 1)) {
-            // Only the West square is free
-            return firstSpotHit - 1;
-        } else if (!player2Shots.includes(lastSpotHit + 1)) {
-            // Only the East square is free
-            return lastSpotHit + 1;
-        }
-    }
-};
-
-const allSurroundingSpotsFree = (spotHit) => {
-    // Check to see if all spots around chosen spot aren't in player2Shots array or if they are inside the gameboard
-    if (((spotHit - 10) > 0) && ((spotHit + 10) <= 100) && (findLastDigit(spotHit) !== 0) 
-    && (findLastDigit(spotHit) !== 1) && !player2Shots.includes(spotHit + 10) && !player2Shots.includes(spotHit - 10)
-    && !player2Shots.includes(spotHit + 1) && !player2Shots.includes(spotHit - 1)) {
-        return true;
-    } else {
-        return false
-    }
-};
-
-const checkEastAndWestSpotsFree = (firstSpotHit, lastSpotHit) => {
-    if ((findLastDigit(firstSpotHit) !== 1) && (findLastDigit(lastSpotHit) !== 0) && 
-    !player2Shots.includes(firstSpotHit - 1) && !player2Shots.includes(lastSpotHit + 1)) {
-        return true;
-    } else {
-        return false;
-    }
-};
-
-const shootShipHitOnce = (enemyShipIndex) => {
-    let direction;
-    let spotHit = player1Ships[enemyShipIndex].hit[0];
-    if (allSurroundingSpotsFree(spotHit)) {
-        direction = randomIntFromInterval(1, 4)
-            if (direction === 1) {
-                // Pick spot North of hit ship
-                return spotHit - 10;
-            } else if (direction === 2) {
-                // Pick spot South of hit ship
-                return spotHit + 10;
-            } else if (direction === 3) {
-                // Pick spot east of hit ship
-                return spotHit + 1;
-            } else if (direction === 4) {
-                // Pick spot west of hit ship
-                return spotHit - 1;
-            } else {
-                return true
-            }
-    } else {
-        if (((spotHit - 10) > 0) && !player2Shots.includes(spotHit - 10)) {
-            // Pick spot North of hit ship
-            return spotHit - 10;
-        } else if ((spotHit + 10) < 101 && !player2Shots.includes(spotHit + 10)) {
-            // Pick spot South of hit ship
-            return spotHit + 10;
-        } else if (findLastDigit(spotHit) !== 0 && !player2Shots.includes(spotHit + 1)) {
-            // Pick spot east of hit ship
-            return spotHit + 1;
-        } else if ((findLastDigit(spotHit) !== 1 && !player2Shots.includes(spotHit - 1))) {
-            // Pick spot west of hit ship
-            return spotHit - 1;
-        }
-    }
-};
-
 function checkForHitShips (enemyShips) {
     for (let i=0; i < enemyShips.length; i++) {
         if (enemyShips[i].hit.length !== 0 && enemyShips[i].sunk === false) {
@@ -298,11 +66,6 @@ function checkForHitShips (enemyShips) {
         }
     }
     return false;
-};
-
-const convertNumberToDomSquare = (dataIndex) => {
-    let stringCounter = "'" + dataIndex.toString() + "'";
-    return document.querySelector(`[data=${stringCounter}]`);
 };
 
 const markHitOnBoard = (shotPosition, enemyShips, event) => {
@@ -368,6 +131,184 @@ const whoShotYa = () => {
     }
 };
 
+const convertNumberToDomSquare = (dataIndex) => {
+    let stringCounter = "'" + dataIndex.toString() + "'";
+    return document.querySelector(`[data=${stringCounter}]`);
+};
+
+// CPU Opponent 
+// CPU randomly picks spots until it finds a ship
+// CPU will only pick spots where there is room for player1's smallest afloat ship
+// Randomly picks spots around the ship until it finds another
+// Then it chooses one of the two spots in line with the two hits
+const cpuShot = () => {
+    let selectedSquare = randomIntFromInterval(1, 100);
+    if (checkForHitShips(player1Ships) === false) {  // Check to see if there are any partially hit ships
+        while(player2Shots.includes(selectedSquare) || typeof(selectedSquare) !== 'number' || 
+        !(roomForVertShipCPU(selectedSquare) || roomForHorzShipCPU(selectedSquare)) ) {
+            selectedSquare = randomIntFromInterval(1, 100);
+        }
+    } else {
+        let enemyShipIndex = checkForHitShips(player1Ships);
+        if (player1Ships[enemyShipIndex].hit.length === 1) {
+            // If ship has only been hit once, randomly pick a square next to it
+            selectedSquare = shootShipHitOnce(enemyShipIndex);
+        } else {
+            // If ship has been hit multiple times, pick a square in line with the other hits
+            selectedSquare = shootShipHitMultipleTimes(enemyShipIndex);
+        }
+    }
+    checkForHit(selectedSquare);
+};
+
+// CPU action if ship has only been hit once
+const shootShipHitOnce = (enemyShipIndex) => {
+    let direction;
+    let spotHit = player1Ships[enemyShipIndex].hit[0];
+    if (allSurroundingSpotsFree(spotHit)) {
+        direction = randomIntFromInterval(1, 4)
+            if (direction === 1) {
+                // Pick spot North of hit ship
+                return spotHit - 10;
+            } else if (direction === 2) {
+                // Pick spot South of hit ship
+                return spotHit + 10;
+            } else if (direction === 3) {
+                // Pick spot east of hit ship
+                return spotHit + 1;
+            } else if (direction === 4) {
+                // Pick spot west of hit ship
+                return spotHit - 1;
+            } else {
+                return true
+            }
+    } else {
+        if (((spotHit - 10) > 0) && !player2Shots.includes(spotHit - 10)) {
+            // Pick spot North of hit ship
+            return spotHit - 10;
+        } else if ((spotHit + 10) < 101 && !player2Shots.includes(spotHit + 10)) {
+            // Pick spot South of hit ship
+            return spotHit + 10;
+        } else if (findLastDigit(spotHit) !== 0 && !player2Shots.includes(spotHit + 1)) {
+            // Pick spot east of hit ship
+            return spotHit + 1;
+        } else if ((findLastDigit(spotHit) !== 1 && !player2Shots.includes(spotHit - 1))) {
+            // Pick spot west of hit ship
+            return spotHit - 1;
+        }
+    }
+};
+
+// CPU action if ship is shot multiple times
+const shootShipHitMultipleTimes = (enemyShipIndex) => {
+    let firstSpotHit = player1Ships[enemyShipIndex].hit[0];
+    let lastSpotHit = player1Ships[enemyShipIndex].hit[player1Ships[enemyShipIndex].hit.length - 1];
+    if ( (lastSpotHit - firstSpotHit) > 9 ) {        // Check if ship is vertical
+        // If both North and South squares are free, randomly pick one
+        if (northAndSouthSpotsFree(firstSpotHit, lastSpotHit)) {
+            if (randomIntFromInterval(1, 2) === 1)  {
+                return firstSpotHit - 10;
+            } else if (!player2Shots.includes(lastSpotHit + 10)) {
+                return lastSpotHit + 10;
+            }
+        } else if ((firstSpotHit - 10) > 0 && !player2Shots.includes(firstSpotHit - 10)) {
+            // Only the North square is free
+            return firstSpotHit - 10;
+        } else if ((lastSpotHit + 10) <= 100  && !player2Shots.includes(lastSpotHit + 10)) {
+            // Only the South square is free
+            return lastSpotHit + 10;
+        }
+    } else if ( (lastSpotHit - firstSpotHit) < 9 ) {    // Check if ship is horizontal
+        // If both East and West squares are free, randomly pick one
+        if (checkEastAndWestSpotsFree(firstSpotHit, lastSpotHit)) {
+            if (randomIntFromInterval(1, 2) === 1 && !player2Shots.includes(firstSpotHit - 1)) {
+                return firstSpotHit - 1;
+            } else if (!player2Shots.includes(lastSpotHit + 1)) {
+                return lastSpotHit + 1;
+            }
+        } else if (findLastDigit(firstSpotHit) !== 1 && !player2Shots.includes(firstSpotHit - 1)) {
+            // Only the West square is free
+            return firstSpotHit - 1;
+        } else if (!player2Shots.includes(lastSpotHit + 1)) {
+            // Only the East square is free
+            return lastSpotHit + 1;
+        }
+    }
+};
+
+// Check to see if there's room for player1's smallest afloat ship on horz axis
+const roomForHorzShipCPU = (shotPosition) => {
+    let minShipSize = findSmallestShipSize(player1Ships);
+    let index = 0; 
+    for (let i=1; i<minShipSize; i++) {    //Check to the right of the shotPosition
+        // If not enough room right, check where it stops
+        if (player2Shots.includes(shotPosition + i) || findLastDigit(shotPosition + i) === 1) {
+            index = minShipSize - i;
+        }
+    }
+    if (index === 0) {
+        return true;
+    } else {   
+        for (let i=(index); i>0; i--) {   // Check to the left of the shotPosition
+            if (player2Shots.includes(shotPosition - i) || (findLastDigit(shotPosition - i) === 0)) {
+                return false
+            }
+        }
+    }
+    return true;
+}
+
+// Check to see if there's room for player1's smallest afloat ship on vert axis
+const roomForVertShipCPU = (shotPosition) => {
+    let minShipSize = findSmallestShipSize(player1Ships);
+    let index = 0; 
+    for (let i=10; i<(minShipSize*10); i+=10) {    //Check below the shotPosition
+        // If not enough room below, check where it stops
+        if (player2Shots.includes(shotPosition + i) || (shotPosition + i) > 100) {
+            index = (minShipSize * 10) - i;
+        }
+    }
+    if (index === 0) {
+        return true;
+    } else {   
+        for (let i=(index); i>0; i-=10) {   // Check above the shotPosition
+            if (player2Shots.includes(shotPosition - i) || (shotPosition + i) > 0) {
+                return false
+            }
+        }
+    }
+    return true;
+}
+
+const northAndSouthSpotsFree = (firstSpotHit, lastSpotHit) => {
+    if ((firstSpotHit - 10) > 0 && (lastSpotHit + 10) <= 100  && !player2Shots.includes(firstSpotHit - 10)
+    && !player2Shots.includes(lastSpotHit + 10)) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const checkEastAndWestSpotsFree = (firstSpotHit, lastSpotHit) => {
+    if ((findLastDigit(firstSpotHit) !== 1) && (findLastDigit(lastSpotHit) !== 0) && 
+    !player2Shots.includes(firstSpotHit - 1) && !player2Shots.includes(lastSpotHit + 1)) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+const allSurroundingSpotsFree = (spotHit) => {
+    // Check to see if all spots around chosen spot aren't in player2Shots array or if they are inside the gameboard
+    if (((spotHit - 10) > 0) && ((spotHit + 10) <= 100) && (findLastDigit(spotHit) !== 0) 
+    && (findLastDigit(spotHit) !== 1) && !player2Shots.includes(spotHit + 10) && !player2Shots.includes(spotHit - 10)
+    && !player2Shots.includes(spotHit + 1) && !player2Shots.includes(spotHit - 1)) {
+        return true;
+    } else {
+        return false
+    }
+};
+
 const findSmallestShipSize = (enemyShips) => {
     for (let i=4; i>=0; i--) {
         if (enemyShips[i].sunk === false) {
@@ -377,28 +318,3 @@ const findSmallestShipSize = (enemyShips) => {
 };
 
 export { gameplayLoop, checkForHit }
-
-// Might not need, combined into one function   FOOBAR
-// const roomForEastShipCPU = (shotPosition, passedIndex=0) => {
-//     let minShipSize = findSmallestShipSize(player1Ships);
-//     let index = passedIndex; 
-//     for (let i=1; i<minShipSize; i++) {    //Check to the right of the shotPosition
-//         // If the spot is in player2Shots, keep track on where it stopped
-//         if (player1Shots.includes(shotPosition + i) || findLastDigit(shotPosition + i) === 1) {
-//             return index = minShipSize - i;
-//         }
-//     }
-//     return index;
-// };
-
-// const roomForWestShipCPU = (shotPosition, passedIndex=findSmallestShipSize(player1Ships)) => {
-//     let index = passedIndex; 
-//     if (index !== 0) {   
-//         for (let i=(index-1); i>0; i--) {   // Check to the left of the shotPosition
-//             if (player1Shots.includes(shotPosition - i) || (findLastDigit(shotPosition - i) === 0)) {
-//                 return false
-//             }
-//         }
-//     }
-//     return index;
-// };
