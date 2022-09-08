@@ -1,5 +1,6 @@
 // TODO make play again btn
 
+import { axisBtn, gameBoardEnemy, gameBoardMain, setupGame, startGame, startingScreen } from "./dom";
 import { player1Ships, player2Ships, finishedPlacingShips, 
     playerTurn, findSquareHover, changePlayerTurnHeading, 
     randomIntFromInterval, findLastDigit } from "./ship"
@@ -100,11 +101,13 @@ let allShipsSunk = (enemyShips) =>{
 };
 
 const declareWinner = () => {
-    let playerTurnHeading = document.querySelector('#playerTurnHeading');
+    let winner = document.querySelector('#winner');
     if (playerTurn === 'player1') {
-      return playerTurnHeading.textContent = 'Player 1 Wins!!';
+        winner.textContent = 'Player 1!!!';
+        return newGameModal.style.display = "flex";
     } else if (playerTurn === 'player2') {
-      return playerTurnHeading.textContent = 'Player 2 Wins!!'
+        winner.textContent = 'Player 2!!!';
+        return newGameModal.style.display = "flex";
     }
 };
 
@@ -316,5 +319,59 @@ const findSmallestShipSize = (enemyShips) => {
         }
     }
 };
+
+// New Game Modal
+const playAgainBtn = document.getElementById("playAgainBtn");
+const startingScreenBtn = document.getElementById("startingScreenBtn");
+
+startingScreenBtn.addEventListener('click', () => {
+    // Reset to title screen
+    resetGame();
+    let gameContainer = document.querySelector('#gameContainer');
+    gameContainer.style.display = 'none';
+    startGame.removeEventListener('click',  function () { setupGame(); });
+    startingScreen.style.display = 'block';
+})
+
+playAgainBtn.addEventListener('click', () => {
+    resetGame();
+    setupGame();
+})
+
+const resetGame = () => {
+    resetDisplayToPlaceShips();
+    resetPlayershots();
+    resetShips();
+}
+
+// Remove gameboards and display axis btn
+const resetDisplayToPlaceShips = () => {
+    gameBoardMain.removeEventListener('click', function (event) {
+        if (player1Ships[4].position === null) {
+          placeAllShips(event, findPlayerShips())
+        }
+    })
+    gameBoardEnemy.innerHTML = "";
+    gameBoardMain.innerHTML = "";
+    gameBoardEnemy.style.display = "none";
+    newGameModal.style.display = "none";
+    axisBtn.style.display = "block";
+}
+
+const resetPlayershots = () => {
+    player1Shots = [];
+    player2Shots = [];
+}
+
+const resetShips = () => {
+    for (let i=0; i<player1Ships.length; i++) {
+        player1Ships[i].position = null;
+        player1Ships[i].sunk = false;
+        player1Ships[i].hit = [];
+        player2Ships[i].position = null;
+        player2Ships[i].sunk = false;
+        player2Ships[i].hit = [];
+    }
+}
 
 export { gameplayLoop, checkForHit }

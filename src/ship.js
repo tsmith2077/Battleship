@@ -1,16 +1,16 @@
-import { gameBoardEnemy, displayGameBoard } from "./dom";
-const axisBtn = document.querySelector('#axisBtn');
+import { gameBoardEnemy, displayGameBoard, axisBtn } from "./dom";
 let playerTurn = 'player1';
-let player1Ships = "";
-let player2Ships = "";
+let player1Ships;
+let player2Ships;
 let finishedPlacingShips = false;
 
 const createAndPlaceShips = () => {
+  let axis = 'row';
+  finishedPlacingShips = false;
 
-
-player1Ships = ship();
-player2Ships = ship();
-let axis = 'row';
+  player1Ships = ship();
+  player2Ships = ship();
+  
 
 // export default 
 function ship () {
@@ -37,9 +37,10 @@ function ship () {
     return playerShipsArr;
   };
 
+  
   // Check to see if any ships are missing position coordinates
   // If missing return index from array
-  function checkShipsPlaced (playerShips) {
+  const checkShipsPlaced = (playerShips) => {
     for (let i=0; i < playerShips.length; i++) {
         if (playerShips[i].position === null) {
             return i;
@@ -55,10 +56,9 @@ function ship () {
     let squareHover = findSquareHover(event, playerShips);
     if (!checkRoomForShip(shipLength, squareHover, playerShips) && playerTurn == 'player1') {
       let playerTurnHeading = document.querySelector('#playerTurnHeading');
-      playerTurnHeading.textContent = 'Not enough room for ship. Please try again.'
+      return playerTurnHeading.textContent = 'Not enough room for ship. Please try again.'
     } else if ((checkRoomForShip(shipLength, squareHover, playerShips) && shipLength > 1)) {
-      changePlayerTurnHeading();
-      placeCurrentShip(playerShips, shipLength, squareHover, currentShipIndex);
+      return placeCurrentShip(playerShips, shipLength, squareHover, currentShipIndex);
     }
   };
 
@@ -88,6 +88,8 @@ function placeComputerShips () {
     }
     placeAllShips(shipPlacement, player2Ships);
   }
+  axisBtn.display = 'none';
+  axis = 'row';
   displayGameBoard(gameBoardEnemy, 'enemySquare');
   finishedPlacingShips = true;
 };
@@ -133,7 +135,7 @@ function checkRoomForShip (shipLength, squareHover, playerShips) {
 function checkForMatchInArr (playerShips, positionArr) {
   if (playerShips[0].position === null) {
     return false;
-  } else {
+  } else if (!playerShips[0].position === null) {
     for (let i=0; i < playerShips.length; i++) {
       if (playerShips[i].position !== null) {
         if (playerShips[i].position.some( e => positionArr.includes(e) )) {

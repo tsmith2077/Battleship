@@ -9,12 +9,14 @@ const startGame = document.querySelector('#newGameBtn');
 const axisBtn = document.querySelector('#axisBtn');
 
 // EVENT LISTENERS
-startGame.addEventListener('click', function (event) {
-    setupGame(event);
+startGame.addEventListener('click', function () {
+    setupGame();
 });
 
 // EVENT LISTENER FUNCTIONS
 function setupGame () {
+    let gameContainer = document.querySelector('#gameContainer');
+    gameContainer.style.display = 'flex';
     let playerTurnHeading = document.querySelector('#playerTurnHeading');
     playerTurnHeading.textContent = 'Player 1 Turn';
     playerTurnHeading.style.display = 'flex';
@@ -44,4 +46,4 @@ const displayGameBoard = ((gameBoardDiv, boardClass) => {
 });
 
 
-export { gameBoardEnemy, displayGameBoard }
+export { gameBoardEnemy, gameBoardMain, displayGameBoard, setupGame, axisBtn, startingScreen, startGame }

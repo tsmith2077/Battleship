@@ -2,13 +2,12 @@
     font-family: 'MyFont';
     src: url('./Kanit-Bold.ttf') format('truetype'),
       url('./Kanit-Regular.ttf') format('truetype');
-    /* font-weight: 600;
-    font-style: normal; */
 }
 
 * {
   margin: 0;
   padding: 0;
+  font-family: 'MyFont';
 }
 
 body {
@@ -109,4 +108,67 @@ body {
 .ship {
   background-color: black;
   color: black;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  margin: auto;
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+}
+
+/* Modal */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 45%; 
+  height: 45%;
+  border-radius: 28px;
+  background-color: #708090;
+  border: 8px solid black;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 5px 15px;
+}
+
+#winnerDeclaration {
+  margin-top: 5%;
+  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+}
+
+#modalBtnCont {
+  margin-top: 5%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 4rem;
+}
+
+.modalBtn {
+  height: 6rem;
+  width: 16rem;
+  font-size: 24px;
+  border-radius: 28px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
+   rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
