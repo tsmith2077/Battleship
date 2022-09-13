@@ -1,5 +1,3 @@
-// TODO make play again btn
-
 import { axisBtn, gameBoardEnemy, gameBoardMain, setupGame, startGame, startingScreen } from "./dom";
 import { player1Ships, player2Ships, finishedPlacingShips, 
     playerTurn, findSquareHover, changePlayerTurnHeading, 

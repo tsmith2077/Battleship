@@ -1,4 +1,5 @@
 import { checkForHit } from "./gameplayLoop";
+import { playerTurn } from "./ship";
 
 // Game boards
 const gameBoardMain = document.querySelector('#gameBoardMain');
@@ -34,7 +35,11 @@ const displayGameBoard = ((gameBoardDiv, boardClass) => {
         if (boardClass == 'mainSquare') {
             gameBoardSquare.setAttribute('data', i);
         } else if (boardClass == 'enemySquare') {
-            gameBoardSquare.addEventListener('click', function () {checkForHit(event)});
+            gameBoardSquare.addEventListener('click', function () {
+                if (playerTurn === 'player1') {
+                    checkForHit(event);
+                }
+            });
             gameBoardSquare.setAttribute('data2', i);
         }
         gameBoardDiv.appendChild(gameBoardSquare);
