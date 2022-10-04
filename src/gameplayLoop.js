@@ -40,6 +40,7 @@ const checkForHit = (event) => {
                 enemyShips[i].hit.sort();
                 if (isShipSunk(enemyShips[i].hit, enemyShips[i].position) && enemyShips[i].sunk === false) {
                     enemyShips[i].sunk = true;
+                    changeColorSunkShip(enemyShips[i].position, playerTurn);
                      if (allShipsSunk(enemyShips)) {
                         declareWinner();
                      }
@@ -67,17 +68,24 @@ function checkForHitShips (enemyShips) {
     return false;
 };
 
+const changeColorSunkShip = (shipPositionArr, playerTurn) => {
+    for (let i=0; i<shipPositionArr.length; i++) {
+        let selectedSquare = convertNumberToDomSquare(shipPositionArr[i], playerTurn);
+        selectedSquare.textContent = 'X';
+        selectedSquare.style.color = '#8b0000';
+    }
+}
+
 const markHitOnBoard = (shotPosition, enemyShips, event) => {
     let selectedSquare;
     if (playerTurn === 'player1') {
         selectedSquare = event.target;
     } else {
-        selectedSquare = convertNumberToDomSquare(event);
+        selectedSquare = convertNumberToDomSquare(event, playerTurn);
     }
     for (let i=0; i < enemyShips.length; i++) {
         if (enemyShips[i].position.includes(shotPosition)) {
-            selectedSquare.textContent = 'X';
-            return selectedSquare.style.color = '#8b0000';
+            return selectedSquare.textContent = 'X';
         }
     }
     return selectedSquare.textContent = 'O';
@@ -132,9 +140,13 @@ const whoShotYa = () => {
     }
 };
 
-const convertNumberToDomSquare = (dataIndex) => {
+const convertNumberToDomSquare = (dataIndex, playerTurn) => {
     let stringCounter = "'" + dataIndex.toString() + "'";
-    return document.querySelector(`[data=${stringCounter}]`);
+    if (playerTurn === 'player1') {
+        return document.querySelector(`[data2=${stringCounter}]`)
+    } else {
+        return document.querySelector(`[data=${stringCounter}]`);
+    }
 };
 
 // CPU Opponent 

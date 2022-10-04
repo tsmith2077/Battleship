@@ -66,10 +66,12 @@ body {
 
 .gameBoardSquare {
   border: solid black;
-  display: grid;
+  display: flex;
   justify-content: center;
   align-items: center;
   font-size: 2rem;
+  color: #FAF9F6;
+  text-align: center;
 }
 
 #newGameHeader {
@@ -103,11 +105,6 @@ body {
 #playerTurnHeading {
   display: none;
   margin-bottom: 1rem;
-}
-
-.ship {
-  background-color: black;
-  color: black;
 }
 
 /* The Modal (background) */
