@@ -58,9 +58,8 @@ function ship () {
       let playerTurnHeading = document.querySelector('#playerTurnHeading');
       return playerTurnHeading.textContent = 'Not enough room for ship. Please try again.'
     } else if (!checkRoomForShip(shipLength, squareHover, playerShips) && playerTurn == 'player2'){
-      return console.log(squareHover)
+      return 
     } else if ((checkRoomForShip(shipLength, squareHover, playerShips) && shipLength > 1)) {
-      console.log(player2Ships)
       return placeCurrentShip(playerShips, shipLength, squareHover, currentShipIndex);
     }
   };
@@ -138,7 +137,7 @@ function checkRoomForShip (shipLength, squareHover, playerShips) {
 function checkForMatchInArr (playerShips, positionArr) {
   if (playerShips[0].position === null) {
     return false;
-  } else if (!playerShips[0].position === null) {
+  } else {
     for (let i=0; i < playerShips.length; i++) {
       if (playerShips[i].position !== null) {
         if (playerShips[i].position.some( e => positionArr.includes(e) )) {
